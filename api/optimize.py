@@ -24,6 +24,9 @@ def hitung_baseline(df_dika, batas_modal=None):
     else:
         df['unit_base'] = (df['max_demand'] * 0.5).astype(int)
 
+    # Pastikan baseline tidak melebihi max_demand
+    df['unit_base'] = df[['unit_base', 'max_demand']].min(axis=1).astype(int)
+
     df['modal_base'] = df['unit_base'] * df['modal_unit']
     df['profit_base'] = df['unit_base'] * df['profit_unit']
 
@@ -73,7 +76,7 @@ def get_baseline():
 def optimize():
     try:
         data_input = request.json or {}
-        total_modal = int(data_input.get('modal', 15000000))
+        total_modal = int(data_input.get('modal', 2000000))
         generasi = int(data_input.get('generasi', 300))
         populasi = int(data_input.get('populasi', 100))
 
@@ -93,11 +96,23 @@ def optimize():
 
         rekomendasi_list = []
         total_unit_ga = 0
+        total_modal_ga = 0
+        total_profit_ga = 0
 
         for item in hasil_ga['tabel_rekomendasi']:
             kode = item['kode_produk']
-            jumlah_beli = int(item['jumlah_produksi_optimal'])
+            max_dem = int(item['max_demand'])
+            modal_u = int(item['modal_unit'])
+            profit_u = int(item['profit_unit'])
+
+            # Terapkan batas keras qty <= max_demand
+            jumlah_beli = min(int(item['jumlah_produksi_optimal']), max_dem)
+            sub_modal = jumlah_beli * modal_u
+            sub_profit = jumlah_beli * profit_u
+
             total_unit_ga += jumlah_beli
+            total_modal_ga += sub_modal
+            total_profit_ga += sub_profit
 
             info_dika = base_map.get(kode, {})
             unit_base = int(info_dika.get('unit_base', 0))
@@ -108,23 +123,23 @@ def optimize():
                 "kode_produk": str(kode),
                 "nama_produk": str(info_dika.get('nama_produk', item['nama_produk'])),
                 "kategori": str(info_dika.get('kategori_produk', '')),
-                "modal_unit": int(item['modal_unit']),
-                "profit_unit": int(item['profit_unit']),
-                "max_demand": int(item['max_demand']),
+                "modal_unit": modal_u,
+                "profit_unit": profit_u,
+                "max_demand": max_dem,
                 "unit_baseline": unit_base,
                 "modal_baseline": modal_base,
                 "profit_baseline": profit_base,
                 "jumlah_beli": jumlah_beli,
-                "subtotal_modal": int(item['subtotal_modal']),
-                "subtotal_profit": int(item['subtotal_profit']),
-                "selisih_profit": int(item['subtotal_profit']) - profit_base
+                "subtotal_modal": sub_modal,
+                "subtotal_profit": sub_profit,
+                "selisih_profit": sub_profit - profit_base
             })
 
         total_profit_base = int(df_base['profit_base'].sum())
         total_modal_base = int(df_base['modal_base'].sum())
-        total_profit_ga = int(hasil_ga['total_profit_optimal'])
         kenaikan_profit = total_profit_ga - total_profit_base
         kenaikan_persen = round((kenaikan_profit / total_profit_base) * 100, 2) if total_profit_base > 0 else 0
+        roi_ga = round((total_profit_ga / total_modal_ga) * 100, 2) if total_modal_ga > 0 else 0
 
         convergence_data = [
             {"generasi": int(row['generasi']), "fitness": int(row['best_profit'])}
@@ -134,10 +149,10 @@ def optimize():
         return jsonify({
             "kpi": {
                 "total_profit": total_profit_ga,
-                "modal_terpakai": int(hasil_ga['modal_terpakai']),
-                "sisa_modal": int(hasil_ga['sisa_modal']),
+                "modal_terpakai": total_modal_ga,
+                "sisa_modal": max(0, total_modal - total_modal_ga),
                 "total_unit": total_unit_ga,
-                "roi_persen": float(hasil_ga['roi_persen'])
+                "roi_persen": roi_ga
             },
             "comparison": {
                 "baseline_profit": total_profit_base,
@@ -145,7 +160,7 @@ def optimize():
                 "kenaikan_profit": kenaikan_profit,
                 "kenaikan_persen": kenaikan_persen,
                 "baseline_modal": total_modal_base,
-                "ga_modal": int(hasil_ga['modal_terpakai']),
+                "ga_modal": total_modal_ga,
                 "baseline_unit": int(df_base['unit_base'].sum()),
                 "ga_unit": total_unit_ga
             },

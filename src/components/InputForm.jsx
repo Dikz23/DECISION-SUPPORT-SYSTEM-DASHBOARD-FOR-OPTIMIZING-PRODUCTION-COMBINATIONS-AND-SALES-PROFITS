@@ -16,10 +16,10 @@ export default function InputForm({
   const [showAdvanced, setShowAdvanced] = useState(false);
 
   const presetModal = [
+    { label: 'Rp 1 Juta', value: 1000000 },
+    { label: 'Rp 2 Juta', value: 2000000 },
     { label: 'Rp 5 Juta', value: 5000000 },
     { label: 'Rp 10 Juta', value: 10000000 },
-    { label: 'Rp 25 Juta', value: 25000000 },
-    { label: 'Rp 50 Juta', value: 50000000 },
   ];
 
   return (
@@ -121,7 +121,7 @@ export default function InputForm({
                 onChange={(e) => setGenerasi(Number(e.target.value))}
                 className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-900 focus:outline-none focus:border-emerald-600"
               />
-              <p className="text-[11px] text-slate-400 mt-1">Semakin tinggi generasi, hasil semakin konvergen (default: 100)</p>
+              <p className="text-[11px] text-slate-400 mt-1">Semakin tinggi generasi, hasil semakin konvergen (default: 300)</p>
             </div>
 
             <div>
@@ -136,7 +136,7 @@ export default function InputForm({
                 onChange={(e) => setPopulasi(Number(e.target.value))}
                 className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-900 focus:outline-none focus:border-emerald-600"
               />
-              <p className="text-[11px] text-slate-400 mt-1">Banyaknya kandidat solusi per generasi (default: 50)</p>
+              <p className="text-[11px] text-slate-400 mt-1">Banyaknya kandidat solusi per generasi (default: 100)</p>
             </div>
           </div>
         )}

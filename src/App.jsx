@@ -9,7 +9,7 @@ const formatRupiah = (angka) =>
   new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(angka || 0);
 
 export default function App() {
-  const [modal, setModal] = useState(15000000);
+  const [modal, setModal] = useState(2000000);
   const [generasi, setGenerasi] = useState(300);
   const [populasi, setPopulasi] = useState(100);
   const [loading, setLoading] = useState(false);
