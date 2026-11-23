@@ -1,1 +1,64 @@
 @import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #e6ebf2;
+    color: #1e293b;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Permukaan menonjol (Extruded / Convex) khas Neumorphism */
+.neu-flat {
+  background-color: #e6ebf2;
+  box-shadow:
+    9px 9px 18px #c5cdd9,
+    -9px -9px 18px #ffffff;
+}
+
+.neu-sm {
+  background-color: #e6ebf2;
+  box-shadow:
+    5px 5px 10px #c5cdd9,
+    -5px -5px 10px #ffffff;
+}
+
+/* Permukaan cekung ke dalam (Pressed / Concave / Inset) */
+.neu-inset {
+  background-color: #e6ebf2;
+  box-shadow:
+    inset 5px 5px 10px #c5cdd9,
+    inset -5px -5px 10px #ffffff;
+}
+
+.neu-btn {
+  background-color: #e6ebf2;
+  box-shadow:
+    5px 5px 10px #c5cdd9,
+    -5px -5px 10px #ffffff;
+  transition: transform 140ms ease, box-shadow 140ms ease, color 140ms ease;
+}
+
+.neu-btn:hover:not(:disabled) {
+  box-shadow:
+    6px 6px 12px #bec7d4,
+    -6px -6px 12px #ffffff;
+}
+
+.neu-btn:active:not(:disabled) {
+  transform: scale(0.99);
+  box-shadow:
+    inset 4px 4px 8px #c5cdd9,
+    inset -4px -4px 8px #ffffff;
+}
+
+.neu-btn-active {
+  background-color: #e6ebf2;
+  box-shadow:
+    inset 4px 4px 8px #c5cdd9,
+    inset -4px -4px 8px #ffffff;
+}

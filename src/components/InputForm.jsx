@@ -23,17 +23,27 @@ export default function InputForm({
   ];
 
   return (
-    <section className="bg-white border border-slate-200/90 rounded-2xl shadow-sm overflow-hidden">
-      <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-        <div>
-          <h2 className="text-sm font-semibold text-slate-900">Konfigurasi Anggaran & Parameter</h2>
-          <p className="text-xs text-slate-500">Tentukan batas modal belanja untuk mencari kombinasi profit tertinggi</p>
+    <section className="neu-flat rounded-3xl p-6 sm:p-7 space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="flex items-center gap-3.5">
+          <div className="w-11 h-11 rounded-2xl neu-sm flex items-center justify-center text-indigo-600 font-mono font-bold text-sm">
+            01
+          </div>
+          <div>
+            <h2 className="text-base sm:text-lg font-bold text-slate-800">
+              Konfigurasi Modal & Parameter GA
+            </h2>
+            <p className="text-xs text-slate-500">
+              Atur batas modal belanja untuk mencari kombinasi alokasi stok dengan profit tertinggi
+            </p>
+          </div>
         </div>
+
         {hasResult && (
           <button
             type="button"
             onClick={onReset}
-            className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-800 transition cursor-pointer"
+            className="neu-btn inline-flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-indigo-600 px-4 py-2.5 rounded-2xl cursor-pointer self-start sm:self-auto"
           >
             <RotateCcw className="w-3.5 h-3.5" />
             Reset Hasil
@@ -41,15 +51,16 @@ export default function InputForm({
         )}
       </div>
 
-      <form onSubmit={onSubmit} className="p-6 space-y-5">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      <form onSubmit={onSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Kolom Input Nominal Modal */}
-          <div className="lg:col-span-7 space-y-2.5">
-            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500">
-              Total Modal Tersedia
+          <div className="lg:col-span-7 space-y-3">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500">
+              Total Modal Tersedia (Default: Rp 2.000.000)
             </label>
-            <div className="relative flex items-center">
-              <span className="absolute left-4 text-slate-400 font-semibold text-base select-none">
+
+            <div className="neu-inset rounded-2xl px-4 py-2 flex items-center gap-3">
+              <span className="font-mono font-bold text-sm text-indigo-600 select-none">
                 Rp
               </span>
               <input
@@ -59,46 +70,61 @@ export default function InputForm({
                 required
                 value={modal}
                 onChange={(e) => setModal(Number(e.target.value))}
-                className="w-full bg-slate-50/70 hover:bg-white focus:bg-white border border-slate-300 rounded-xl pl-12 pr-4 py-3 text-slate-900 text-lg font-bold transition focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600"
+                className="w-full bg-transparent py-1.5 text-slate-800 font-mono text-xl font-bold focus:outline-none"
               />
             </div>
 
             {/* Tombol Pilihan Cepat */}
-            <div className="flex flex-wrap items-center gap-2 pt-1">
-              <span className="text-xs text-slate-400 mr-1">Cepat pilih:</span>
-              {presetModal.map((preset) => (
-                <button
-                  key={preset.value}
-                  type="button"
-                  onClick={() => setModal(preset.value)}
-                  className={`px-2.5 py-1 rounded-lg text-xs font-medium border transition cursor-pointer ${
-                    modal === preset.value
-                      ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  {preset.label}
-                </button>
-              ))}
+            <div className="flex flex-wrap items-center gap-2.5 pt-1">
+              <span className="text-xs font-medium text-slate-500 mr-1">Cepat pilih:</span>
+              {presetModal.map((preset) => {
+                const active = modal === preset.value;
+                return (
+                  <button
+                    key={preset.value}
+                    type="button"
+                    onClick={() => setModal(preset.value)}
+                    className={`px-3.5 py-2 rounded-xl font-mono text-xs font-bold cursor-pointer transition ${
+                      active
+                        ? 'neu-btn-active text-indigo-600'
+                        : 'neu-btn text-slate-700 hover:text-indigo-600'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
           {/* Kolom Tombol Aksi */}
-          <div className="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 lg:pt-6">
+          <div className="lg:col-span-5 flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-4 lg:pt-7">
             <button
               type="button"
               onClick={() => setShowAdvanced(!showAdvanced)}
-              className="flex-1 flex items-center justify-center gap-2 bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 px-4 py-3.5 rounded-xl text-sm font-medium transition cursor-pointer"
+              className="neu-btn flex-1 flex items-center justify-center gap-2 text-slate-700 hover:text-indigo-600 px-4 py-3.5 rounded-2xl text-sm font-semibold cursor-pointer"
             >
-              <SlidersHorizontal className="w-4 h-4 text-slate-500" />
+              <SlidersHorizontal className="w-4 h-4 text-indigo-600" />
               <span>Parameter GA</span>
-              {showAdvanced ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+              {showAdvanced ? (
+                <ChevronUp className="w-4 h-4 text-slate-500" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-slate-500" />
+              )}
             </button>
 
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white px-6 py-3.5 rounded-xl text-sm font-semibold transition shadow-sm cursor-pointer"
+              className="neu-btn flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white disabled:opacity-50 px-6 py-3.5 rounded-2xl text-sm font-bold cursor-pointer"
+              style={
+                !loading
+                  ? {
+                      backgroundColor: '#4f46e5',
+                      boxShadow: '5px 5px 12px #b8c2d1, -5px -5px 12px #ffffff',
+                    }
+                  : undefined
+              }
             >
               <Play className="w-4 h-4 fill-current" />
               <span>{loading ? 'Memproses...' : 'Jalankan Optimasi'}</span>
@@ -106,37 +132,41 @@ export default function InputForm({
           </div>
         </div>
 
-        {/* Panel Parameter GA Lanjutan */}
+        {/* Panel Parameter Lanjutan */}
         {showAdvanced && (
-          <div className="pt-5 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50/60 -mx-6 -mb-6 px-6 py-5">
-            <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                Jumlah Generasi (Iterasi Evolusi)
+          <div className="pt-5 border-t border-slate-300/70 grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
+                Jumlah Generasi
               </label>
-              <input
-                type="number"
-                min="10"
-                max="1000"
-                value={generasi}
-                onChange={(e) => setGenerasi(Number(e.target.value))}
-                className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-900 focus:outline-none focus:border-emerald-600"
-              />
-              <p className="text-[11px] text-slate-400 mt-1">Semakin tinggi generasi, hasil semakin konvergen (default: 300)</p>
+              <div className="neu-inset rounded-2xl px-4 py-2.5">
+                <input
+                  type="number"
+                  min="10"
+                  max="1000"
+                  value={generasi}
+                  onChange={(e) => setGenerasi(Number(e.target.value))}
+                  className="w-full bg-transparent font-mono text-sm font-bold text-slate-800 focus:outline-none"
+                />
+              </div>
+              <p className="text-[11px] text-slate-500 pl-1">Default: 300 generasi</p>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
-                Ukuran Populasi (Jumlah Kromosom)
+            <div className="space-y-1.5">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600">
+                Ukuran Populasi
               </label>
-              <input
-                type="number"
-                min="10"
-                max="500"
-                value={populasi}
-                onChange={(e) => setPopulasi(Number(e.target.value))}
-                className="w-full bg-white border border-slate-300 rounded-xl px-3.5 py-2.5 text-sm font-medium text-slate-900 focus:outline-none focus:border-emerald-600"
-              />
-              <p className="text-[11px] text-slate-400 mt-1">Banyaknya kandidat solusi per generasi (default: 100)</p>
+              <div className="neu-inset rounded-2xl px-4 py-2.5">
+                <input
+                  type="number"
+                  min="10"
+                  max="500"
+                  value={populasi}
+                  onChange={(e) => setPopulasi(Number(e.target.value))}
+                  className="w-full bg-transparent font-mono text-sm font-bold text-slate-800 focus:outline-none"
+                />
+              </div>
+              <p className="text-[11px] text-slate-500 pl-1">Default: 100 kromosom</p>
             </div>
           </div>
         )}
