@@ -74,11 +74,11 @@ export default function App() {
               </p>
             </div>
           </div>
-
+          {/* ubah bagian header dikit */}
           <div className="neu-inset px-4 py-2 rounded-2xl flex items-center gap-2 self-start sm:self-auto">
             <span className="w-2.5 h-2.5 rounded-full bg-teal-500" />
             <span className="font-mono text-xs font-bold text-slate-700">
-              NEUMORPHISM UI
+              Algorithm genetik
             </span>
           </div>
         </div>
